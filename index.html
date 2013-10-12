@@ -37,9 +37,9 @@
 <a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
 
 <ul>
-    <li>DNSBL lookups by nick or IP address<br />
+<li>DNSBL lookups by nick or IP address
 This is useful in support for speed and accuracy of support.</li>
-<li>Forwarding of non-services <code>KILL</code>s to the snoop channel <br />
+<li>Forwarding of non-services <code>KILL</code>s to the snoop channel
 This is useful in making operators more easily accountable for their actions.</li>
 </ul><h2>
 <a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
@@ -48,63 +48,106 @@ This is useful in making operators more easily accountable for their actions.</l
 <li>Extract <code>cod</code> to some directory</li>
 <li>Copy the example configuration and edit it to your needs, the defaults are pretty sane.</li>
 <li>Add the appropriate <code>connect</code> block to Charybdis, ponychat-ircd or any other ircd that uses TS6. Your mileage may vary.</li>
-<li><code>./cod</code></li>
+<li>Change to the source directory <code>src</code>
+</li>
+<li><code>python cod.py</code></li>
 <li>Watch it link up and enjoy your new IRC services!</li>
 </ol><h2>
 <a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <p>Commands in channels are prefixes by the prefix set in <code>me::prefix</code>.</p>
 
-<h3>
-<a name="list-of-commands" class="anchor" href="#list-of-commands"><span class="octicon octicon-link"></span></a>List of Commands</h3>
+<h2>
+<a name="list-of-modules" class="anchor" href="#list-of-modules"><span class="octicon octicon-link"></span></a>List of Modules</h2>
+
+<h4>
+<a name="core-modules" class="anchor" href="#core-modules"><span class="octicon octicon-link"></span></a>Core modules</h4>
 
 <table>
 <thead><tr>
-<th align="left">Command</th>
-<th align="center">IRCOP&nbsp;needed</th>
-<th align="left">Usage</th>
+<th>Name</th>
+<th>Description</th>
 </tr></thead>
 <tbody>
 <tr>
-<td align="left"><code>TEST</code></td>
-<td align="center">no</td>
-<td align="left">Prints a test message</td>
-</tr>
-<tr>
-<td align="left"><code>JOIN</code></td>
-<td align="center">yes</td>
-<td align="left">Joins a channel</td>
-</tr>
-<tr>
-<td align="left"><code>RBL</code></td>
-<td align="center">yes</td>
-<td align="left">Prints DNSBL lookup output to <code>etc::snoopchan</code>
+<td>
+<code>core</code> / <code>s2scommands</code>
 </td>
+<td>Defines handlers for TS6 commands. Do not unload this.</td>
 </tr>
 <tr>
-<td align="left"><code>MPD&nbsp;FIND</code></td>
-<td align="center">no</td>
-<td align="left">Searches the MPD database</td>
+<td>
+<code>core</code> / <code>admin</code>
+</td>
+<td>Defines commands for module loading and channel joinparts. Do not unload this.</td>
 </tr>
 <tr>
-<td align="left"><code>MPD&nbsp;STATUS</code></td>
-<td align="center">no</td>
-<td align="left">Prints the status of mpd</td>
+<td>
+<code>protocol</code> / <code>ponychat-ircd</code>
+</td>
+<td>Defines the login process for <a href="http://github.com/PonyChat/ponychat-ircd"><code>ponychat-ircd</code></a>. Do not unload this.</td>
+</tr>
+</tbody>
+</table><h4>
+<a name="normal-modules" class="anchor" href="#normal-modules"><span class="octicon octicon-link"></span></a>Normal modules</h4>
+
+<table>
+<thead><tr>
+<th>Name</th>
+<th>Description</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code>dnsbl</code></td>
+<td>Does searching in DNS blacklists on clients by nick or arbitrary IP addresses. Usage is <code>RBL TARGET</code>.</td>
 </tr>
 <tr>
-<td align="left"><code>OPNAME</code></td>
-<td align="center">no</td>
-<td align="left">Generates a fake military operation name</td>
+<td><code>dnsblannounce</code></td>
+<td>Announces DNSBL hits to the services snoop channel and prints a full lookup on the hit to the services snoop channel.</td>
 </tr>
 <tr>
-<td align="left"><code>REHASH</code></td>
-<td align="center">yes</td>
-<td align="left">Rehashes config file from disk</td>
+<td><code>killannounce</code></td>
+<td>Announces all non-services sourced kills to the services snoop channel with the reason</td>
 </tr>
 <tr>
-<td align="left"><code>DIE</code></td>
-<td align="center">yes</td>
-<td align="left">Kills Cod</td>
+<td><code>motd</code></td>
+<td>Handles a remote <code>/MOTD</code> with a customizable text blurb.</td>
+</tr>
+<tr>
+<td><code>mpdclient</code></td>
+<td>Connects to an MPD server and allows users to search the database or print basic statistics.</td>
+</tr>
+<tr>
+<td><code>ofc</code></td>
+<td>Orbital Friendship Cannon. This module is designed to stress test the IRC daemon you are connected to.</td>
+</tr>
+<tr>
+<td><code>opname</code></td>
+<td>Generates military operation names that would have come from a 1980's B movie. Usage is <code>OPNAME</code>.</td>
+</tr>
+<tr>
+<td><code>prettyprint</code></td>
+<td>Prints channel messages with the nickname source when services is not running with <code>etc::production</code> set to <code>true</code>.</td>
+</tr>
+<tr>
+<td><code>rehash</code></td>
+<td>Listens for remote <code>REHASH</code> commands and respects them.</td>
+</tr>
+<tr>
+<td><code>say</code></td>
+<td>Sends an arbitrary message to an arbitrary channel.</td>
+</tr>
+<tr>
+<td><code>stats</code></td>
+<td>Shows stats on a remote <code>STATS</code> command.</td>
+</tr>
+<tr>
+<td><code>test</code></td>
+<td>Example module for use of creating modules.</td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td>Replies with its version number.</td>
 </tr>
 </tbody>
 </table><h2>
