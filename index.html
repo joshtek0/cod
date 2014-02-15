@@ -3,11 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Cod by lyska</title>
+    <title>Cod by cod-services</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <script src="javascripts/scale.fix.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,28 +15,32 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1 class="header">Cod</h1>
-        <p class="header">Python Extended IRC Services</p>
+        <h1>Cod</h1>
+        <p>Python Extended IRC Services</p>
+
+        <p class="view"><a href="https://github.com/cod-services/cod">View the Project on GitHub <small>cod-services/cod</small></a></p>
+
 
         <ul>
-          <li class="download"><a class="buttons" href="https://github.com/lyska/cod/zipball/master">Download ZIP</a></li>
-          <li class="download"><a class="buttons" href="https://github.com/lyska/cod/tarball/master">Download TAR</a></li>
-          <li><a class="buttons github" href="https://github.com/lyska/cod">View On GitHub</a></li>
+          <li><a href="https://github.com/cod-services/cod/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/cod-services/cod/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/cod-services/cod">View On <strong>GitHub</strong></a></li>
         </ul>
-
-        <p class="header">This project is maintained by <a class="header name" href="https://github.com/lyska">lyska</a></p>
-
-
       </header>
       <section>
         <h1>
 <a name="cod" class="anchor" href="#cod"><span class="octicon octicon-link"></span></a>Cod</h1>
 
-<p>Extended IRC services in Python <a href="https://bitdeli.com/free" title="Bitdeli Badge"><img src="https://d2weczhvl823v0.cloudfront.net/lyska/cod/trend.png" alt="Bitdeli Badge"></a></p>
+<p>Extended IRC services in Python</p>
+
+<p><a href="https://bitdeli.com/free" title="Bitdeli Badge"><img src="https://d2weczhvl823v0.buttfront.net/lyska/cod/trend.png" alt="Bitdeli Badge"></a> <a href="https://www.ohloh.net/p/cod-services" title="Ohloh Badge"><img src="https://www.ohloh.net/p/cod-services/widgets/project_thin_badge.gif" alt="Ohloh badge"></a></p>
 
 <p>Installation directions are in <code>doc/INSTALL.markdown</code>. Directions for setting
-up Atheme integration are in <code>doc/funserv.markdown</code>. If you have any questions,
-please ask in <code>#cod</code> on <code>irc.yolo-swag.com</code>.</p>
+up Atheme integration are in <code>doc/funserv.markdown</code>. IRCd-specific directions 
+are in <code>doc/IRCD.markdown</code>. This project is under the terms of the zlib 
+license, a copy of this license is included at <code>doc/LICENSE.markdown</code>. Some 
+files in this project are <strong>not</strong> under the terms of this license and are 
+licensed per file as appropriate.</p>
 
 <h3>
 <a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features:</h3>
@@ -53,75 +56,23 @@ please ask in <code>#cod</code> on <code>irc.yolo-swag.com</code>.</p>
 <li>Rehashing config file</li>
 <li>Separation of user and oper commands</li>
 <li>SQLite database</li>
-<li>TS6 link protocol support</li>
+<li>SpanningTree/TS6 link protocol support
+
+<ul>
+<li>Charybdis 3.4.2 +</li>
+<li>Elemental-IRCd 6.5 +</li>
+<li>InspIRCd 2.0.x</li>
+<li>Tethys 0.1 +</li>
+</ul>
+</li>
 <li>Virtual environment support</li>
-</ul><h3>
-<a name="modules" class="anchor" href="#modules"><span class="octicon octicon-link"></span></a>Modules:</h3>
-
-<ul>
-<li>Announcing and full RBL lookups of DNSBL hits (on elemental-ircd only)</li>
-<li>Atheme intergration</li>
-<li>Brainfuck interpreter</li>
-<li>DNSBL lookups to snoop channel by user or IP address</li>
-<li>DNS pool displaying (Via Tortoise Labs API)</li>
-<li>FAQ management</li>
-<li>Fibbonacci number lookups</li>
-<li>Forwarding of <code>KILL</code>s not made by services to snoop channel</li>
-<li>Gentle reminders for people that use "nick|away" nicknames</li>
-<li>Immature phrase appender</li>
-<li>JSON configuration file</li>
-<li>Kill clients on a failed <code>OPER</code> attempt and log to snoop channel</li>
-<li>Military operation name generation</li>
-<li>Memory use statistics</li>
-<li>MPD interface
-
-<ul>
-<li>Pause/Play/Next/Previous</li>
-</ul>
-</li>
-<li>Pretty printing of channel messages to the screen or log file</li>
-<li>Random choice from a list</li>
-<li>Relaying of <code>HostServ</code> messages from snoop channel to staff channel
-
-<ul>
-<li>Also does <code>HostServ</code> lookups on requested vhosts</li>
-<li>Automatically rejects real domain names</li>
-</ul>
-</li>
-<li>Relaying of otherwise hidden protocol staff abuse points to snoop channel
-
-<ul>
-<li>On elemental-ircd, DNSBL hits are logged</li>
-<li>
-<code>RESV</code> use</li>
-</ul>
-</li>
-<li>SQLite database</li>
-<li>Sending files from the disk to a user or channel</li>
-<li>Stress testing via the Orbital Friendship Cannon
-
-<ul>
-<li>Statistics logging of OFC runs</li>
-</ul>
-</li>
-</ul><h3>
-<a name="url-scraping" class="anchor" href="#url-scraping"><span class="octicon octicon-link"></span></a>URL Scraping:</h3>
-
-<ul>
-<li>4chan post lookups</li>
-<li>danbooru post lookups</li>
-<li>derpibooru post lookups</li>
-<li>EQBeats song information lookups</li>
-<li>reddit post lookups</li>
-<li>Soundcloud song information lookups</li>
-<li>Twitch.tv API lookups of video streams</li>
-<li>Youtube API lookups and searching</li>
 </ul><h3>
 <a name="goals" class="anchor" href="#goals"><span class="octicon octicon-link"></span></a>Goals:</h3>
 
 <ul>
 <li>DNS record editing (Tortoise Labs)</li>
 <li>Feature-completeness with skybot</li>
+<li>Multiple clients that do the same thing, like BotServ</li>
 <li>MPD playlist manipulation</li>
 <li>User statistics collection
 
@@ -137,13 +88,15 @@ please ask in <code>#cod</code> on <code>irc.yolo-swag.com</code>.</p>
 <li>Automated provisioning and linking of temporary overflow IRC daemons</li>
 <li>Spam filtering (opt-in only)</li>
 </ul><p>The official channel for Cod is <code>#cod</code> on <code>irc.yolo-swag.com</code>. Come take
-a visit and say hi!</p>
+a visit and say hi! Anyone with halfop (<code>%</code>) or higher has direct push access 
+and the live instance is called <code>ShadowNET</code>.</p>
       </section>
       <footer>
-        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+        <p>This project is maintained by <a href="https://github.com/cod-services">cod-services</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
-		
+    <script src="javascripts/scale.fix.js"></script>
+    
   </body>
 </html>
