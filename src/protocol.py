@@ -25,6 +25,7 @@ This code was originally written for eon, but has been ported to cod.
 """
 
 from textwrap import wrap
+import time
 
 class TS6ServerConn():
     """
@@ -227,3 +228,67 @@ class P10ServerConn():
         #P10 does not support client/channel metadata
         pass
 
+class UnrealServerConn():
+    def __init__(self, cod):
+        self.cod = cod
+        self.numeric = self.cod.sid
+
+    def gen_uid(self):
+        return None
+
+    def send_line(self, line):
+        self.cod.sendLine(line)
+
+    def send_line_sname(self, line):
+        self.send_line(":%s %s" % (self.cod.config["me"]["name"], line))
+
+    def add_client(self, client):
+        now = int(time.time())
+        #client.modes = self.umodes
+        client.uid = client.nick
+        self.send_line("NICK %s 1 %s %s %s %s * %s * :%s" % (client.nick, now, client.user, client.host, self.cod.config["me"]["name"], client.modes, client.gecos))
+
+    def quit(self, client, reason):
+        self.send_line(":%s QUIT :%s" % (client.uid, reason))
+
+    def change_nick(self, client, nick):
+        now = int(time.time())
+
+        self.send_line(":%s NICK %s :%d" % (client.uid, nick, now))
+
+    def _msg_like(self, type, client, target, message):
+        lines = []
+
+        if len(message) > 450:
+            lines = wrap(message, 450)
+        else:
+            lines = [message]
+
+        for thatline in lines:
+            self.send_line(":%s %s %s :%s" %
+                    (client.uid, type, target, thatline))
+
+    def privmsg(self, client, target, message):
+        self._msg_like("PRIVMSG", client, target, message)
+
+    def notice(self, client, target, message):
+        self._msg_like("NOTICE", client, target, message)
+
+    def join_client(self, client, channel):
+        #<<< :hub.split.net SJOIN 1391508309 #services :appledash
+        self.send_line_sname("SJOIN %d %s :%s" % (int(time.time()), channel, client.nick))
+
+    def part_client(self, client, channel, reason):
+        self.send_line(":%s PART %s :%s" % (client.uid, channel.name, reason))
+
+    def kill(self, killer, target, reason):
+        self.send_line(":%s KILL %s :spacing %s" %\
+                (killer.uid, target.uid, reason))
+
+    def snote(self, line, mask="o"):
+        self.send_line_sname("SENDSNO %s :%s" % \
+                (mask, line))
+
+    def add_metadata(self, client, key, value):
+        self.send_line_sname("ENCAP * METADATA ADD %s %s :%s" %
+                (client.uid, key.upper(), value))

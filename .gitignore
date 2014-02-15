@@ -48,3 +48,6 @@ modules/experimental/*
 
 # Venv
 env/*
+
+# IDE project files
+.idea/*
