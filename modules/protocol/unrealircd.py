@@ -99,7 +99,6 @@ def handlePRIVMSG(cod, line):
     """
     Handle PRIVMSG
     """
-    print "HANDLING THAT JUNK"
     line.source = cod.clients[line.source]
 
     destination = line.args[0]
@@ -115,7 +114,6 @@ def handlePRIVMSG(cod, line):
 
     command = ""
     pm = True
-    print "PARSED"
 
     if destination[0] == "#":
         if destination not in cod.client.channels:
@@ -125,8 +123,7 @@ def handlePRIVMSG(cod, line):
                 command = splitline[0].upper()
                 command = command[1:]
                 pm = False
-        except IndexError as e:
-            #print str(e)
+        except IndexError:
             return
 
     elif destination != cod.client.uid and pm:
@@ -135,14 +132,10 @@ def handlePRIVMSG(cod, line):
     else:
         destination = cod.clients[destination]
         command = splitline[0].upper()
-    print "ENTIERING TRY LOOP"
     #Guido, I am sorry.
     try:
-        print "FUCK"
         if source.isOper:
-            print "OPER"
             for impl in cod.opercommands[command]:
-                print "ITS AN IMPL"
                 try:
                     if pm:
                         impl(cod, line, splitline, source, source)
@@ -152,7 +145,6 @@ def handlePRIVMSG(cod, line):
                     cod.servicesLog("%s: %s" % (type(e), e.message))
                     continue
         else:
-            print "RAISING"
             raise KeyError
 
     except KeyError as e:
