@@ -45,6 +45,40 @@ import traceback
 from structures import *
 from utils import *
 
+__commands = {}
+__hooks = {}
+
+from functools import wraps
+
+def hook(hookname):
+    def decorator(f):
+        if hookname not in __hooks:
+            __hooks[hookname] = []
+
+        __hooks[hookname].append({"module": f.__module__, "func": f})
+
+        @wraps(f)
+        def wrapper(*args):
+            return f(*args)
+
+        return wrapper
+
+    return decorator
+
+def command(cmdname, need_oper=False):
+    def decorator(f):
+        if cmdname in __commands:
+            raise AssertionError("Cannot have identical commands")
+
+        __commands[cmdname] = {"module": f.__module__, "func": f,
+                "help": f.__doc__, "needoper": need_oper}
+
+        @wraps(f)
+        def wrapper(*args):
+            return f(*args)
+        return wrapper
+
+    return decorator
 
 class Cod():
 
@@ -62,7 +96,6 @@ class Cod():
         self.channels = {}
         self.servers = {}
         self.modules = {}
-        self.hooks = {}
 
         self.socks = [self.link]
         self.sockhandlers = {self.link: self.process}
@@ -72,8 +105,6 @@ class Cod():
         self.loginFunc = None
 
         self.s2scommands = {"PRIVMSG": []}
-        self.botcommands = {}
-        self.opercommands = {}
 
         self.bursted = False
         self.db = None
@@ -248,56 +279,42 @@ class Cod():
         del self.modules[modname]
         del sys.modules[modname]
 
+        hooks_to_nuke = {}
+        commands_to_nuke = []
+
+        for name, hooks in __hooks.iteritems():
+            for hook in hooks:
+                if hook["module"] == modname:
+                    if name not in hooks_to_nuke:
+                        hooks_to_nuke[name] = []
+
+                    hooks_to_nuke[name].append(hook)
+
+                    print hook["module"], "unloaded %s hook %s" % (name, hook["func"].__name__)
+
+        for name, hooks in hooks_to_nuke.iteritems():
+            for hook in hooks:
+                __hooks[name].pop(__hooks[name].index(hook))
+
+        for name, command in __commands.iteritems():
+            if command["module"] == modname:
+                commands_to_nuke.append((name, command))
+                self.log("%s %s" % (command["module"], "unloaded command %s" % name))
+
+        for command in commands_to_nuke:
+            __commands.pop(command[0])
+
         #Run the garbage collector
         gc.collect()
 
         self.log("Module %s unloaded" % modname)
 
-    def addBotCommand(self, command, func, oper=False):
-        """
-        Adds a botcommand to the bot commands table, optionally adding it
-        to the special table full of oper-only commands.
-        """
+    def runCommand(self, line, name, args):
+        command = __commands[name]
 
-        wheretoadd = self.botcommands
-
-        if oper:
-            wheretoadd = self.opercommands
-            self.log("%s added as OPERCOMMAND" % command, "CMD")
-        else:
-            self.log("%s added as USERCOMMAND" % command, "CMD")
-
-        wheretoadd[command] = [func]
-
-    def delBotCommand(self, command):
-        """
-        Removes a bot command from the oper-only and normal user level bot commands
-        tables if applicable
-        """
-
-        try:
-            del self.botcommands[command]
-            self.log("%s deleted as USERCOMMAND" % command, "CMD")
-        except KeyError:
-            del self.opercommands[command]
-            self.log("%s deleted as OPERCOMMAND" % command, "CMD")
-
-    def addHook(self, name, func):
-        """
-        Adds a hook to the hook table.
-        """
-
-        if name not in self.hooks:
-            self.hooks[name] = []
-
-        self.hooks[name].append(func)
-
-    def delHook(self, name, func):
-        """
-        Deletes a hook from the hook table.
-        """
-
-        self.hooks[name].remove(func)
+        if line.source.isOper:
+            if command["needoper"]:
+                command["func"](self, *args)
 
     def runHooks(self, name, args):
         """
@@ -307,6 +324,9 @@ class Cod():
 
         if name not in self.hooks:
             return
+
+        for hook in __hooks[name]:
+            hook["func"](self, *args)
 
         for func in self.hooks[name]:
             try:
@@ -328,7 +348,6 @@ class Cod():
         self.config = config.Config("config.json").config
 
         for module in self.modules:
-            #cod.log("Rehashing %s" % module, "===")
             try:
                 self.modules[module].rehash()
             except:
